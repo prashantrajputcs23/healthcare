@@ -1,0 +1,108 @@
+{% extends 'user/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}Sales Orders{% endblock %}
+{% block header %}
+{% endblock %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span
+                class="text-muted fw-light">Pharmacy/</span> Sales</h4>
+        <!-- Basic Layout & Basic with Icons -->
+        <div class="row">
+            <!-- Basic Layout -->
+            <div class="col-xxl">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="get" class="row gx-2 align-items-center" id="filter_form">
+                            <div class="col-auto">
+                                {{ form.created_by|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                {{ form.patient|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                {{ form.order_date|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                {{ form.is_paid|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                <button type="submit" class="btn btn-primary">Filter</button>
+                                <a href="{% url 'inventory:sales' %}" class="btn btn-secondary ms-2">Reset</a>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">Pharmacy Sales (₹{{ total_sales }})</h5>
+                        <small class="text-muted float-end"><a href="{% url 'inventory:create_sales_order' %}"
+                                                               class="btn btn-primary">Add Sale</a></small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <center><img src="{% static 'user/img/loader/loader.gif' %}"
+                                         style="width: 300px; height: 300px;" id="loading-image"></center>
+                            <div class="col table-responsive" id="table">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {#    Details Model #}
+    <div class="modal fade" id="modalCenter" tabindex="-1" aria-hidden="true" style="display: none;">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content" id="model_detail">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">Modal title</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col mb-3">
+                            <label for="nameWithTitle" class="form-label">Name</label>
+                            <input type="text" id="nameWithTitle" class="form-control" placeholder="Enter Name">
+                        </div>
+                    </div>
+                    <div class="row g-2">
+                        <div class="col mb-0">
+                            <label for="emailWithTitle" class="form-label">Email</label>
+                            <input type="email" id="emailWithTitle" class="form-control" placeholder="xxxx@xxx.xx">
+                        </div>
+                        <div class="col mb-0">
+                            <label for="dobWithTitle" class="form-label">DOB</label>
+                            <input type="date" id="dobWithTitle" class="form-control">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    <!-- Flatpickr CSS -->
+    <script src="{% static 'user/js/fetch_table.js' %}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            $('#id_order_date').val('today').change();
+            const form = $('#filter_form');
+            form.on('submit', function (e) {
+                e.preventDefault();
+                load_table('{% url "inventory:sales_table" %}', this);
+            });
+            load_table('{% url "inventory:sales_table" %}', form);
+        });
+    </script>
+{% endblock %}

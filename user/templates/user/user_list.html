@@ -1,0 +1,94 @@
+{% extends 'user/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}User List{% endblock %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">User/</span> List</h4>
+        <div class="row">
+            <div class="col-xxl">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <form method="get" class="form-inline row gx-2 align-items-center"
+                            hx-get="{% url 'user:users' %}"
+                              hx-push-url="true"
+                              hx-target="#table"
+                              hx-swap="innerHTML"
+                              id="filter_form"
+                        >
+                            <div class="col-auto">
+                                {{ filter.form.full_name|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                {{ filter.form.group|as_crispy_field }}
+                            </div>
+                            <div class="col-auto">
+                                {{ filter.form.is_active|as_crispy_field }}
+                            </div>
+                            <div class="col-auto" >
+                                <button type="submit" class="btn btn-primary mt-2 p-1 btn-sm"><i class="bx bx-filter"></i></button>
+                                <button type="reset" class="btn btn-dark mt-2 p-1 btn-sm" hx-get="{% url 'user:users' %}" hx-target="#table" hx-push-url="true" hx-swap="innerHTML" hx-on::after-request="document.getElementById('filter_form').reset();"><i class="bx bx-trash"></i></button>
+                            </div>
+                        </form>
+
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">User List</h5>
+                        <small class="text-muted float-end">
+                            <!-- Add User Button -->
+                            <button class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#form_model"
+                                    hx-get="{% url 'user:add_user' %}"
+                                    hx-target="#form_body"
+                                    hx-swap="innerHTML"
+                            >
+                                Add User
+                            </button>
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col table-responsive" id="table">
+                                {% include 'user/partials/_users_list.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Details Modal #}
+    <div class="modal fade" id="form_model" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="form_body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary close" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+    <script>
+        document.addEventListener("htmx:afterSwap", function (event) {
+            if (event.detail.target.id === "table") {
+                $('#form_model').modal('hide');
+                $('.modal-backdrop').remove();  // ✅ Fixes the overlay issue
+                $('body').removeClass('modal-open');  // ✅ Prevents scrolling lock
+            }
+        });
+    </script>
+{% endblock %}

@@ -1,0 +1,58 @@
+{% extends  'web/base.html' %}
+{% load static %}
+{% block title %}Home Page{% endblock %}
+{% block meta %}{% endblock %}
+{% block content %}
+
+    <!-- Hero Start -->
+    <div class="container-fluid bg-primary py-5 hero-header mb-5">
+        <div class="row py-3">
+            <div class="col-12 text-center">
+                <h1 class="display-3 text-white animated zoomIn">Services</h1>
+                <a href="" class="h4 text-white">Home</a>
+                <i class="far fa-circle text-white px-2"></i>
+                <a href="" class="h4 text-white">Services</a>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+
+    <!-- Service Start -->
+    <div class="container-fluid py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="container">
+            <div class="row g-5 mb-5">
+                <div class="section-title mb-5">
+                    <h5 class="position-relative d-inline-block text-primary text-uppercase">Our Services</h5>
+                    <h1 class="display-5 mb-0">We Offer The Best Quality Treatment Services</h1>
+                </div>
+                <!-- Department Navigation Bar -->
+                <ul class="nav nav-pills mb-3" id="departmentTabs">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.GET.department == None %}active{% endif %}" href="{% url 'web:service_page' %}">All</a>
+                    </li>
+                    {% for department in departments %}
+                        <li class="nav-item">
+                            <a class="nav-link {% if request.GET.department == department.name %}active{% endif %}" href="{% url 'web:service_page' %}?department={{ department.name }}">{{ department }}</a>
+                        </li>
+                    {% endfor %}
+                    <!-- Add more departments as needed -->
+                </ul>
+                <div class="row g-3">
+                    {% for service in services %}
+                        <div class="col-md-4 service-item wow zoomIn" data-wow-delay="0.6s">
+                            <div class="rounded-top overflow-hidden">
+                                <img class="img-fluid" src="{% if service.image %}{{ service.image.url }}{% else %}{% static 'web/img/service-1.jpg' %}{% endif %}"
+                                     alt="" style="width: 100%; height: 300px;">
+                            </div>
+                            <div class="position-relative bg-light rounded-bottom text-center p-4">
+                                <h5 class="m-0">{{ service }}</h5>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Service End -->
+{% endblock %}

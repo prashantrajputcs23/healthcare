@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% extends 'web/base.html' %}
+{% load static %}
+{% block title %}{{ service.name }}{% endblock %}
+{% block meta %}{% endblock %}
+{% block content %}
+
+    <!-- Hero Start -->
+    <div class="container-fluid bg-primary py-5 hero-header mb-5">
+        <div class="row py-3">
+            <div class="col-12 text-center">
+                <h1 class="display-3 text-white animated zoomIn">{{ service.name }}</h1>
+                <a href="{% url 'web:home' %}" class="h4 text-white">Home</a>
+                <i class="far fa-circle text-white px-2"></i>
+                <a href="{% url 'web:service_page' %}" class="h4 text-white">Services</a>
+                <i class="far fa-circle text-white px-2"></i>
+                <span class="h4 text-white">{{ service.name }}</span>
+            </div>
+        </div>
+    </div>
+    <!-- Hero End -->
+
+    <!-- Service Detail Start -->
+    <div class="container py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="row g-5">
+            <!-- Service Image -->
+            <div class="col-lg-6">
+                <img class="img-fluid w-100 rounded" src="{% if service.image %}{{ service.image.url }}{% else %}{% static 'web/img/default-service.jpg' %}{% endif %}" alt="{{ service.name }}">
+            </div>
+            
+            <!-- Service Information -->
+            <div class="col-lg-6">
+                <h5 class="text-primary text-uppercase">{{ service.department.name }}</h5>
+                <h1 class="mb-4">{{ service.name }}</h1>
+                <p>{{ service.description }}</p>
+                
+                <!-- Key Features or Benefits -->
+                <div class="row g-3 mb-4">
+                    {% if service.features %}
+                        <h5 class="mb-3">Key Features</h5>
+                        <ul class="list-unstyled">
+                            {% for feature in service.features.all %}
+                                <li class="mb-2">
+                                    <i class="fa fa-check-circle text-primary me-3"></i>{{ feature.name }}
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <!-- Call to Action (Optional) -->
+                <a href="{% url 'web:contact' %}" class="btn btn-primary py-3 px-5">Contact Us for More Info</a>
+            </div>
+        </div>
+    </div>
+    <!-- Service Detail End -->
+
+    <!-- Similar Services Start -->
+    <div class="container py-5 wow fadeInUp" data-wow-delay="0.1s">
+        <div class="section-title mb-5">
+            <h5 class="position-relative d-inline-block text-primary text-uppercase">Other Services</h5>
+            <h1 class="display-5 mb-0">You Might Also Be Interested In</h1>
+        </div>
+        <div class="row g-3">
+            {% for similar_service in similar_services %}
+                <div class="col-md-4 service-item wow zoomIn" data-wow-delay="0.6s">
+                    <div class="rounded-top overflow-hidden">
+                        <img class="img-fluid" src="{% if similar_service.image %}{{ similar_service.image.url }}{% else %}{% static 'web/img/service-1.jpg' %}{% endif %}"
+                             alt="{{ similar_service.name }}" style="width: 100%; height: 300px;">
+                    </div>
+                    <div class="position-relative bg-light rounded-bottom text-center p-4">
+                        <h5 class="m-0">{{ similar_service.name }}</h5>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+    <!-- Similar Services End -->
+
+{% endblock %}
+</title>
+</head>
+<body>
+
+</body>
+</html>

@@ -1,0 +1,14 @@
+{% load crispy_forms_tags %}
+<div class="form-container" x-data="{ loading: false, errors: {} }">
+    <form method="post"
+          hx-post="{{ url }}"
+          hx-target=".form-container"
+          hx-trigger="submit"
+          hx-swap="innerHTML"
+          hx-on::closeModal="$('.close').click()"
+          enctype="multipart/form-data">
+        {% csrf_token %}
+        {% crispy form %}
+        <button type="submit" class="btn btn-primary">Save</button>
+    </form>
+</div>

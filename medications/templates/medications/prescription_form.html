@@ -1,0 +1,143 @@
+{% extends 'user/base.html' %}
+{% load static %}
+{% load crispy_forms_filters %}
+{% block content %}
+    <div class="page-content">
+        <section class="row justify-content-center">
+            <div class="col-lg-12 col-md-12">
+                <div class="card mb-4">
+                    <!-- Letterhead -->
+                    <div class="card-header text-center p-4 bg-light">
+                        <h2 class="text-uppercase">{{ request.user.doctor.name }}</h2>
+                        <p class="mb-0">{{ request.user.doctor.specialization }}</p>
+                        <p class="mb-0">{{ request.user.doctor.clinic_address }}</p>
+                        <p>{{ request.user.doctor.phone }} | {{ request.user.doctor.email }}</p>
+                    </div>
+
+                    <!-- Body -->
+                    <div class="card-body p-4">
+                        <!-- Patient Information -->
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <h6>Patient Name: <span class="fw-bold">{{ patient.name }}</span></h6>
+                            </div>
+                            <div class="col-md-3">
+                                <h6>Age: <span class="fw-bold">{{ patient.age }}</span></h6>
+                            </div>
+                            <div class="col-md-3">
+                                <h6>Gender: <span class="fw-bold">{{ patient.gender }}</span></h6>
+                            </div>
+                        </div>
+
+                        <!-- Date and Prescription No -->
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <h6>Date: <span class="fw-bold">{% now "Y-m-d" %}</span></h6>
+                            </div>
+                            <div class="col-md-6 text-end">
+                                <h6>Prescription No: {% if prescription %}{{ prescription.prescription_no }}{% else %}
+                                    <button class="btn btn-sm btn-outline-primary">New</button>{% endif %}</h6>
+                            </div>
+                        </div>
+
+                        <!-- Prescription Section -->
+                        <div class="border p-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Prescription</h5>
+                                <button class="btn btn-outline-primary btn-sm js-create-prescription-detail"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-prescription"
+                                        data-url="{% url 'doctor:create_prescription' %}">Add Medication
+                                </button>
+                            </div>
+                            <div class="table table-responsive">
+                                <table class="table table-responsive table-bordered" id="prescription-detail-table">
+                                    <thead class="table-light">
+                                    <tr>
+                                        <th>Medication</th>
+                                        <th>Dosage</th>
+                                        <th>Frequency</th>
+                                        <th>Duration</th>
+                                        <th>Instructions</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {% include 'doctor/includes/_prescription_detail_list.html' %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- Vitals Section -->
+                        <div class="border p-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Vitals</h5>
+                                <button class="btn btn-outline-primary btn-sm js-create-vital" data-bs-toggle="modal"
+                                        data-bs-target="#modal-prescription" data-url="{% url 'doctor:create_vital' %}">
+                                    Update Vitals
+                                </button>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-4">
+                                    <h6>Blood Pressure: <span class="fw-bold">{{ vitals.bp }}</span></h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Pulse: <span class="fw-bold">{{ vitals.pulse }}</span></h6>
+                                </div>
+                                <div class="col-md-4">
+                                    <h6>Temperature: <span class="fw-bold">{{ vitals.temperature }}</span></h6>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diagnosis and Investigations -->
+                        <div class="border p-3 mb-4">
+                            <div class="d-flex justify-content-between align-items-center mb-3">
+                                <h5 class="mb-0">Diagnosis</h5>
+                                <button class="btn btn-outline-primary btn-sm js-create-diagnosis"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#modal-prescription"
+                                        data-url="{% url 'doctor:create_diagnosis' %}">Add Diagnosis
+                                </button>
+                            </div>
+                            <p>{{ diagnosis.diagnosis_result }}</p>
+                            <h6>Investigations:</h6>
+                            <ul id="investigationsList">
+                                {% for test in diagnosis.tests %}
+                                    <li>{{ test.name }}</li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+
+                        <!-- Doctor's Notes -->
+                        <div class="border p-3 mb-4">
+                            <h5 class="mb-3">Doctor's Notes</h5>
+                            <textarea id="notesField" class="form-control">{{ prescription.notes }}</textarea>
+                        </div>
+
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="card-footer text-center p-4 bg-light">
+                        <h6 class="mb-0">Dr. {{ doctor.name }}</h6>
+                        <p class="mb-0">Signature: ____________________</p>
+                        <p class="mb-0">Date: {{ date }}</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Modal for Adding/Updating Prescription -->
+    <div class="modal fade" id="modal-prescription" tabindex="-1" aria-labelledby="prescriptionModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <h1></h1>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block script %}
+    <script src="{% static 'doctor/js/prescription_detail.js' %}"></script>
+{% endblock %}

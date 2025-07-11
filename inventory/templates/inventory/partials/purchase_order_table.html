@@ -1,0 +1,43 @@
+{% load humanize %}
+{% load custom_tags %}
+{% load static %}
+<table class="table table-hover table-lg">
+    <thead>
+    <tr>
+        <th>#</th>
+        <th>Supplier</th>
+        <th>Total</th>
+        <th>Status</th>
+        <th>Paid?</th>
+        <th>Created By</th>
+        <th>Order Date</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for object in object_list %}
+        <tr>
+            <td>{{ forloop.counter }}</td>
+            <td>{{ object.supplier }}</td>
+            <td>{{ object.total_amount }}</td>
+            <td>{{ object.status }}</td>
+            <td>{% if object.is_paid %}<i class="bx bx-check-circle text-success"></i>{% else %}
+                <i class="bx bx-x-circle text-danger"></i>{% endif %}</td>
+            <td>{{ object.created_by }}</td>
+            <td>{{ object.created_at }}</td>
+            <td>
+                <button class="ml-2 btn btn-sm btn-success" data-bs-toggle="modal"
+                        data-bs-target="#modalCenter"><i class="bx bx-detail"></i>
+                </button>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="8"><p class="p-3 bg-info text-white">No Data</p><a
+                    href="{% url 'inventory:create_purchase_order' %}">Add Purchase Here</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% include 'paginator.html' with url=request.path %}

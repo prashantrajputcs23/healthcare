@@ -1,0 +1,43 @@
+{% load custom_tags %}
+<table class="table table-bordered mt-3">
+    <thead class="">
+    <tr>
+        <th >User</th>
+        {% for date in date_range %}
+            <th style="min-width: 150px;">{{ date|date:"d M" }}</th>
+        {% endfor %}
+        <th>Total P</th>  <!-- Total Present Count -->
+    </tr>
+    </thead>
+    <tbody>
+    {% for user, data in attendance_dict.items %}
+        <tr>
+            <td>{{ user.get_full_name }}</td>
+            {% for date in date_range %}
+                {% with status=data.dates|get_item:date time=data.times|get_item:date %}
+                    <td style="text-align: center;
+                            font-weight: bold;
+                            color: {% if status == 'P' %}green{% elif status == 'A' %}red{% else %}gray{% endif %};">
+                        {{ status }}
+                        {% if time %}
+                            <br><small style="color: black;">
+                            {% if time.in_time %}<span class="text-success">🕒 In: {{ time.in_time }}</span>{% endif %}
+                            {% if time.out_time %}<br><span class="text-danger">🕓 Out: {{ time.out_time }}</span>{% endif %}
+                        </small>
+                        {% endif %}
+                    </td>
+                {% endwith %}
+            {% endfor %}
+            <td style="text-align: center; font-weight: bold; color: green;">
+                {{ data.present_count }}
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="{{ date_range|length|add:2 }}" class="text-center text-muted">
+                No attendance records found.
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>

@@ -1,0 +1,344 @@
+{% load static %}
+<!DOCTYPE html>
+<html
+        lang="en"
+        class="light-style layout-menu-fixed"
+        dir="ltr"
+        data-theme="theme-default"
+        data-assets-path="/static/user/"
+        data-template="vertical-menu-template-free"
+>
+<head>
+    <meta charset="utf-8"/>
+    <meta
+            name="viewport"
+            content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0"
+    />
+
+    <title>{% block title %}{% endblock %}</title>
+
+    <meta name="description" content=""/>
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="{% static 'user/img/favicon/favicon.ico' %}"/>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+    <link
+            href="https://fonts.googleapis.com/css2?family=Public+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&display=swap"
+            rel="stylesheet"
+    />
+
+    <!-- Icons. Uncomment required icon fonts -->
+    <link rel="stylesheet" href="{% static 'user/vendor/fonts/boxicons.css' %}"/>
+
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="{% static 'user/vendor/css/core.css' %}" class="template-customizer-core-css"/>
+    <link rel="stylesheet" href="{% static 'user/vendor/css/theme-default.css' %}"
+          class="template-customizer-theme-css"/>
+    <link rel="stylesheet" href="{% static 'user/css/demo.css' %}"/>
+
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="{% static 'user/vendor/libs/perfect-scrollbar/perfect-scrollbar.css' %}"/>
+
+    <link rel="stylesheet" href="{% static 'user/vendor/libs/typeahead-js/typeahead.css' %}"/>
+    <link rel="stylesheet" href="{% static 'user/vendor/libs/select2/select2.css' %}"/>
+    <link rel="stylesheet" href="{% static 'user/vendor/libs/apex-charts/apex-charts.css' %}"/>
+
+    <!-- Page CSS -->
+
+    <!-- Helpers -->
+    <script src="{% static 'user/vendor/js/helpers.js' %}"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="{% static 'user/js/config.js' %}"></script>
+    <script src="https://unpkg.com/htmx.org@2.0.4"
+            integrity="sha384-HGfztofotfshcF7+8n44JQL2oJmowVChPTg48S+jvZoztPfvwD79OC/LTtG6dMp+"
+            crossorigin="anonymous"></script>
+    <script src="//unpkg.com/alpinejs" defer></script>
+    {% block header %}
+
+    {% endblock %}
+</head>
+
+<body>
+
+<!-- Layout wrapper -->
+<div class="layout-wrapper layout-content-navbar">
+    <div class="layout-container">
+        <!-- Menu -->
+
+        <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
+            <div class="app-brand demo">
+                <a href="{% url 'web:home_page' %}" class="app-brand-link">
+                    <img src="{{ request.org.logo.url }}" style="width: 100%; height:60px;">
+                </a>
+
+                <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto d-block d-xl-none">
+                    <i class="bx bx-chevron-left bx-sm align-middle"></i>
+                </a>
+            </div>
+
+            <div class="menu-inner-shadow"></div>
+
+            <ul class="menu-inner py-1">
+                <!-- Dashboard -->
+                <li class="menu-item active">
+                    <a href="{% url 'user:dashboard' %}?order_date=today" class="menu-link">
+                        <div class="text-truncate" data-i18n="Dashboards">Dashboards</div>
+                    </a>
+                </li>
+                <!-- User Management  -->
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bxs-watch"></i>
+                        <div>User Management</div>
+                    </a>
+                    <ul>
+                        <li class="menu-item">
+                            <a href="{% url 'user:users' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxs-user"></i>Users</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'user:users' %}?group=employee" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxs-user-rectangle"></i>Staff</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'user:users' %}?group=doctor" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bx-user-check"></i>Doctor</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'user:staff_attendance_report' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bx-check-circle"></i>Attendance</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <!-- End User Management  -->
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bxs-watch"></i>
+                        <div>Appointment Management</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{% url 'doctor:create_update_availability' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxs-watch-alt"></i>Availability Change</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'doctor:appointment_list' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxs-paper-plane"></i> Appointments</div>
+                            </a>
+                        </li>
+                        {#                        <li class="menu-item">#}
+                        {#                            <a href="{% url 'doctor:prescription_template' %}" class="menu-link">#}
+                        {#                                <div><i class="menu-icon tf-icons bx bx-pen"></i>Write Prescriptions</div>#}
+                        {#                            </a>#}
+                        {#                        </li>#}
+                    </ul>
+                </li>
+
+                <li class="menu-item">
+                    <a href="javascript:void(0);" class="menu-link menu-toggle">
+                        <i class="menu-icon tf-icons bx bxs-capsule"></i>
+                        <div>Pharmacy Management</div>
+                    </a>
+                    <ul class="menu-sub">
+                        <li class="menu-item">
+                            <a href="{% url 'inventory:pharmacy_products' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxl-product-hunt"></i> products</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'inventory:sales' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bx-line-chart"></i> sales</div>
+                            </a>
+                        </li>
+                        <li class="menu-item">
+                            <a href="{% url 'inventory:purchases' %}" class="menu-link">
+                                <div><i class="menu-icon tf-icons bx bxs-cart"></i> purchases</div>
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+        </aside>
+        <!-- / Menu -->
+
+        <!-- Layout container -->
+        <div class="layout-page">
+            <!-- Navbar -->
+
+            <nav
+                    class="layout-navbar container-xxl navbar navbar-expand-xl navbar-detached align-items-center bg-navbar-theme"
+                    id="layout-navbar"
+            >
+                <div class="layout-menu-toggle navbar-nav align-items-xl-center me-3 me-xl-0 d-xl-none">
+                    <a class="nav-item nav-link px-0 me-xl-4" href="javascript:void(0)">
+                        <i class="bx bx-menu bx-sm"></i>
+                    </a>
+                </div>
+
+                <div class="navbar-nav-right d-flex align-items-center" id="navbar-collapse">
+                    <!-- Search -->
+                    <div class="navbar-nav align-items-center">
+                        <div class="nav-item d-flex align-items-center">
+                            <i class="bx bx-search fs-4 lh-0"></i>
+                            <input
+                                    type="text"
+                                    class="form-control border-0 shadow-none"
+                                    placeholder="Search..."
+                                    aria-label="Search..."
+                            />
+                        </div>
+                    </div>
+                    <!-- /Search -->
+
+                    <ul class="navbar-nav flex-row align-items-center ms-auto">
+                        <!-- User -->
+                        <li class="nav-item navbar-dropdown dropdown-user dropdown">
+                            <a class="nav-link dropdown-toggle hide-arrow" href=""
+                               data-bs-toggle="dropdown">
+                                <div class="avatar avatar-online">
+                                    <img src="{{ request.user.avatar }}" alt
+                                         class="w-px-40 h-auto rounded-circle"/>
+                                </div>
+                            </a>
+                            <ul class="dropdown-menu dropdown-menu-end">
+                                <li>
+                                    <a class="dropdown-item" href="">
+                                        <div class="d-flex">
+                                            <div class="flex-shrink-0 me-3">
+                                                <div class="avatar avatar-online">
+                                                    <img src="{{ request.user.avatar }}" alt
+                                                         class="w-px-40 h-auto rounded-circle"/>
+                                                </div>
+                                            </div>
+                                            <div class="flex-grow-1">
+                                                <span class="fw-semibold d-block">{{ request.user.name }}</span>
+                                                {#                            <small class="text-muted">Admin</small>#}
+                                            </div>
+                                        </div>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="">
+                                        <i class="bx bx-user me-2"></i>
+                                        <span class="align-middle">My Profile</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                                        <i class="bx bx-cog me-2"></i>
+                                        <span class="align-middle">Settings</span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="#">
+                        <span class="d-flex align-items-center align-middle">
+                          <i class="flex-shrink-0 bx bx-credit-card me-2"></i>
+                          <span class="flex-grow-1 align-middle">Billing</span>
+                          <span class="flex-shrink-0 badge badge-center rounded-pill bg-danger w-px-20 h-px-20">4</span>
+                        </span>
+                                    </a>
+                                </li>
+                                <li>
+                                    <div class="dropdown-divider"></div>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'user:logout' %}">
+                                        <i class="bx bx-power-off me-2"></i>
+                                        <span class="align-middle">Log Out</span>
+                                    </a>
+                                </li>
+                            </ul>
+                        </li>
+                        <!--/ User -->
+                    </ul>
+                </div>
+            </nav>
+
+            <!-- / Navbar -->
+
+            <!-- Content wrapper -->
+            <div class="content-wrapper">
+                <!-- Content -->
+                {% block content %}
+                {% endblock %}
+                <!-- Footer -->
+                <footer class="content-footer footer bg-footer-theme">
+                    <div class="container-xxl d-flex flex-wrap justify-content-between py-2 flex-md-row flex-column">
+                        <div class="mb-2 mb-md-0">
+                            ©
+                            <script>
+                                document.write(new Date().getFullYear());
+                            </script>
+                            , made with ❤️ by
+                            <a href="https://themeselection.com" target="_blank" class="footer-link fw-bolder">ThemeSelection</a>
+                        </div>
+                        <div>
+                            <a href="https://themeselection.com/license/" class="footer-link me-4" target="_blank">License</a>
+                            <a href="https://themeselection.com/" target="_blank" class="footer-link me-4">More
+                                Themes</a>
+
+                            <a
+                                    href="https://themeselection.com/demo/sneat-bootstrap-html-admin-template/documentation/"
+                                    target="_blank"
+                                    class="footer-link me-4"
+                            >Documentation</a
+                            >
+
+                            <a
+                                    href="https://github.com/themeselection/sneat-html-admin-template-free/issues"
+                                    target="_blank"
+                                    class="footer-link me-4"
+                            >Support</a
+                            >
+                        </div>
+                    </div>
+                </footer>
+                <!-- / Footer -->
+
+                <div class="content-backdrop fade"></div>
+            </div>
+            <!-- Content wrapper -->
+        </div>
+        <!-- / Layout page -->
+    </div>
+    <!-- Overlay -->
+    <div class="layout-overlay layout-menu-toggle"></div>
+</div>
+
+<!-- Core JS -->
+<!-- build:js assets/vendor/js/core.js -->
+
+<script src="{% static 'user/vendor/libs/jquery/jquery.js' %}"></script>
+<script src="{% static 'user/vendor/libs/popper/popper.js' %}"></script>
+<script src="{% static 'user/vendor/js/bootstrap.js' %}"></script>
+<script src="{% static 'user/vendor/libs/perfect-scrollbar/perfect-scrollbar.js' %}"></script>
+<script src="{% static 'user/vendor/js/menu.js' %}"></script>
+<!-- endbuild -->
+<!-- Vendors JS -->
+<script src="{% static 'user/vendor/libs/apex-charts/apexcharts.js' %}"></script>
+<script src="{% static 'user/vendor/libs/typeahead-js/typeahead.js' %}"></script>
+<script src="{% static 'user/vendor/libs/select2/select2.js' %}"></script>
+<!-- Main JS -->
+<script src="{% static 'user/js/main.js' %}"></script>
+
+<script src="{% static 'user/js/dashboards-analytics.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://unpkg.com/htmx.org@2.0.4"></script>
+
+{% load sweetify %}
+{% sweetify %}
+{% block footer %}{% endblock %}
+</body>
+</html>

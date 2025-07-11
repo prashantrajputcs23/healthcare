@@ -1,0 +1,16 @@
+{% extends 'user/base.html' %}
+{% block title %}Blocked IP{% endblock %}
+{% block content %}
+<div class="container-xxl flex-grow-1 container-p-y">
+    <div class="alert alert-danger text-center">
+        <h4 class="fw-bold"><i class="bx bx-block"></i> Access Blocked</h4>
+        <p>Your IP address <strong>{{ ip }}</strong> is not allowed to access this page.</p>
+        <p>If you believe this is a mistake, please contact the administrator.</p>
+        <form method="post" action="{% url 'user:add_to_whitelist' %}">
+            {% csrf_token %}
+            <input type="hidden" name="ip" value="{{ ip }}">
+            <button class="btn btn-primary mt-3" type="submit">Request Whitelist Access</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,147 @@
+{% extends 'user/base.html' %}
+{% load widget_tweaks %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block content %}
+    <div class="page-heading">
+        <h3>Pharmacy/sale</h3>
+    </div>
+    <div class="page-content">
+        <section class="row">
+            <div class="col-12">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="text-white">Sales Form</h4>
+                    </div>
+                    <div class="card-body">
+                        <form action="" method="POST" class="form-inline p-4">
+                            {% csrf_token %}
+                            {% if patient_form.non_field_errors %}
+                                <div class="alert alert-danger" role="alert">
+                                    {% for error in patient_form.non_field_errors %}
+                                        {{ error }}
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            <div class="row align-items-center">
+
+                                <!-- Field: Phone -->
+                                <div class="col-auto col-sm">
+                                    <div class="form-group mb-2">
+                                        {% render_field patient_form.phone class="form-control" placeholder="Phone" value="+91-" %}
+                                        {% if patient_form.phone.errors %}
+                                            <div class="invalid-feedback">
+                                                {{ patient_form.phone.errors|join:', ' }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Field: Name -->
+                                <div class="col-auto col-sm">
+                                    <div class="form-group mb-2">
+                                        {% render_field patient_form.name|attr:"placeholder:Patient Name" class="form-control" placeholder="Name" %}
+                                        {% if patient_form.name.errors %}
+                                            <div class="invalid-feedback">
+                                                {{ patient_form.name.errors|join:', ' }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Field: Age -->
+                                <div class="col-auto col-sm">
+                                    <div class="form-group mb-2">
+                                        {% render_field patient_form.age class="form-control" placeholder="Age" %}
+                                        {% if patient_form.age.errors %}
+                                            <div class="invalid-feedback">
+                                                {{ patient_form.age.errors|join:', ' }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <!-- Field: Address -->
+                                <div class="col-auto col-sm">
+                                    <div class="form-group mb-2">
+                                        {% render_field patient_form.address class="form-control" %}
+                                        {% if patient_form.address.errors %}
+                                            <div class="invalid-feedback">
+                                                {{ patient_form.address.errors|join:', ' }}
+                                            </div>
+                                        {% endif %}
+                                    </div>
+                                </div>
+
+                                <div class="row align-items-center">
+                                    <!-- Field: Name -->
+                                    {% render_field sales_form.patient class="form-control" %}
+                                    <!-- Field: Name -->
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            {% render_field sales_form.bill_to class="form-control" placeholder="Bill to" %}
+                                            {% if sales_form.bill_to.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ sales_form.bill_to.errors|join:', ' }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            {% render_field sales_form.payment_mode class="form-control" placeholder="Select Payment Mode" %}
+                                            {% if sales_form.payment_mode.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ sales_form.payment_mode.errors|join:', ' }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            {% render_field sales_form.status class="form-control" placeholder="status" %}
+                                            {% if sales_form.status.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ sales_form.status.errors|join:', ' }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            {% render_field sales_form.total_amount|attr:"readonly:readonly" class="form-control" placeholder="Total Amount" %}
+                                            {% if sales_form.total_amount.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ sales_form.total_amount.errors|join:', ' }}
+                                                </div>
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            {% render_field sales_form.is_paid class="form-check-input" placeholder="is_paid" %}
+                                            {% if sales_form.is_paid.errors %}
+                                                <div class="invalid-feedback">
+                                                    {{ sales_form.is_paid.errors|join:', ' }}
+                                                </div>
+                                            {% endif %}
+                                            <label for="is_paid" class="form-check-label">Is Paid</label>
+                                        </div>
+                                    </div>
+                                    <div class="col-auto col-sm">
+                                        <div class="form-group mb-2">
+                                            <input type="submit" name="action" class="btn btn-primary mr-2"
+                                                   value="Save">
+                                        </div>
+                                    </div>
+                                </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+{% endblock %}
+{% block script %}
+{% endblock %}

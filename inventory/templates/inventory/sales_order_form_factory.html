@@ -1,0 +1,163 @@
+{% extends 'user/base.html' %}
+{% load widget_tweaks %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block header %}
+{% endblock %}
+
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Pharmacy/</span>Add sales
+        </h4>
+        <div class="row">
+            <div class="col-xxl">
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h4 class="text-white">Sales Form</h4>
+                    </div>
+                    <div class="card-body">
+                        {% if sales_order_form.non_field_errors %}
+                            <div class="alert alert-danger">
+                                <ul>
+                                    {% for error in sales_order_form.non_field_errors %}
+                                        <li>{{ error }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endif %}
+
+                        <form method="post" class="table-responsive sales-form">
+                            {% csrf_token %}
+                            {{ sales_order_form|crispy }}
+                            <h3>Add Product Details</h3>
+                            <!-- Display non-field errors for the formset -->
+                            {% if form_set_non_field_errors %}
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        {% for error in form_set_non_field_errors %}
+                                            <li>{{ error }}</li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            {% endif %}
+                            <table id="sales-order-details" class="table table-bordered">
+                                {{ formset.management_form }}
+                                <tbody>
+                                {% for form in formset %}
+                                    <tr>
+                                        <td style="min-width: 300px;">{{ form.product|as_crispy_field }}</td>
+                                        <td style="min-width: 200px;">{{ form.quantity|as_crispy_field }}</td>
+                                        <td style="min-width: 200px;">{{ form.price_per_unit|as_crispy_field }}</td>
+                                        <td style="min-width: 200px;">{{ form.discount|as_crispy_field }}</td>
+                                        <td style="min-width: 200px;">{{ form.total|as_crispy_field }}</td>
+                                        <td>
+                                            <button type="button" class="btn btn-danger remove_btn">Remove</button>
+                                        </td>
+                                    </tr>
+                                {% endfor %}
+                                </tbody>
+                            </table>
+
+                            <h2 class="float-end m-5">Total Payble Amount<span class="m-5" id="id_total_amount">--</span></h2>
+                            <button type="button" id="id_add_btn" class="btn btn-success p-1 m-2">Add Item</button>
+                            <button type="submit" class="btn btn-info p-1 m-2">Save & Print</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block footer %}
+    <script src="{% static 'user/js/inline_form_repeat.js' %}" type="text/javascript"></script>
+    <script>
+        $(document).ready(function () {
+            $('select[name*="product"]').select2({
+                placeholder: 'Select Product'
+            });
+            $('#id_patient').select2({
+                allowClear: true,
+                placeholder: 'Select Patient',
+                tags: true,
+            });
+
+            $('#id_add_btn').on('click', function () {
+                $('select[name*="product"]').select2('destroy');
+                const formset = $('#sales-order-details tbody');
+                const newFormRow = formset.find('tr:first-child').clone();
+                add_inline_repeat_form(formset, 'sales_order_details', newFormRow);
+                $('select[name*="product"]').select2();
+            });
+
+            $(document).on('click', '.remove_btn', function () {
+                const formset = $('#sales-order-details tbody');
+                remove_repeat_form(this, formset, 'sales_order_details');
+            });
+        });
+
+    </script>
+    <script>
+        $(document).on('change', '[name*="product"]', function (e) {
+            const row = $(this).closest('tr');
+            const productId = $(this).val();
+
+            $.getJSON("{% url 'inventory:get_product_details' %}", {product_id: productId})
+                .done(function (data) {
+                    if (data.error) {
+                        alert(data.error);
+                        return;
+                    }
+
+                    const quantity = parseFloat(row.find('.quantity').val() || 0);
+                    const pricePerUnit = parseFloat(data.price_per_unit) || 0;
+                    const discountPerUnit = parseFloat(data.discount_amount) || 0;  // Per unit discount
+
+                    row.find('.price-per-unit').val(pricePerUnit.toFixed(2));
+
+                    // Store discount per unit in a data attribute to persist on quantity change
+                    row.find('.discount').data('discount-per-unit', discountPerUnit);
+
+                    // Calculate total discount and net amount
+                    const discountAmount = (discountPerUnit * quantity).toFixed(2);
+                    const netAmount = ((pricePerUnit * quantity) - discountAmount).toFixed(2);
+
+                    row.find('.discount').val(discountAmount);
+                    row.find('.product_total_amount').val(netAmount);
+
+                    updateTotalAmount();
+                })
+                .fail(function (error) {
+                    console.error('Error fetching product details:', error);
+                });
+        });
+
+        $(document).on('input', '[name*="quantity"]', function (e) {
+            const row = $(this).closest('tr');
+            const quantity = parseFloat($(this).val() || 0);
+            const pricePerUnit = parseFloat(row.find('.price-per-unit').val() || 0);
+            const discountPerUnit = parseFloat(row.find('.discount').data('discount-per-unit') || 0);  // Retrieve stored discount per unit
+
+            // Calculate new discount amount
+            const discountAmount = (discountPerUnit * quantity).toFixed(2);
+            const netAmount = ((quantity * pricePerUnit) - discountAmount).toFixed(2);
+
+            row.find('.discount').val(discountAmount);
+            row.find('.product_total_amount').val(netAmount);
+
+            updateTotalAmount();
+        });
+
+        function updateTotalAmount() {
+            let total = 0;
+            $('#sales-order-details tbody tr').each(function () {
+                const rowTotal = parseFloat($(this).find('.product_total_amount').val().trim() || 0);
+                total += rowTotal;
+            });
+            $('#id_total_amount').text(total.toFixed(2));
+        }
+
+
+    </script>
+{% endblock %}

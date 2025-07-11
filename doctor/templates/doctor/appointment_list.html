@@ -1,0 +1,45 @@
+{% extends 'user/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4">
+            <span class="text-muted fw-light">Appointments /</span>List
+        </h4>
+        <div class="card">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Appointments</h5>
+            </div>
+            <div class="card-body">
+                <div class="table">
+                    <table class="table">
+                        <thead>
+                        <tr>
+                            <th>SN.</th>
+                            <th>Patient</th>
+                            <th>Age</th>
+                            <th>Diagnosis</th>
+                            <th>Prescription</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for appointment in object_list %}
+                            <tr class="p-2">
+                                <td>{{ forloop.counter }}</td>
+                                <td>{{ appointment.patient }}</td>
+                                <td>{{ appointment.patient.age }}</td>
+                                <td>NA</td>
+                                <td><a href="" class="mr-2">view</a><a href="" class="ml-2">new</a></td>
+                                <td><a href="">Done</a></td>
+                            </tr>
+                        {% empty %}
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

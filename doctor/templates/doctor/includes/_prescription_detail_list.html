@@ -1,0 +1,25 @@
+{% for detail in prescription_details %}
+    <tr>
+        <td>{{ detail.medication.name }}</td>
+        <td>{{ detail.dosage }}</td>
+        <td>{{ detail.frequency }}</td>
+        <td>{{ detail.duration }}</td>
+        <td>{{ detail.instructions }}</td>
+        <td>
+            <button type="button"
+                    class="btn btn-warning btn-sm js-update-prescription-detail"
+                    data-url="">
+                <i class='bx bx-pencil'></i>
+            </button>
+            <button type="button"
+                    class="btn btn-danger btn-sm js-delete-prescription-detail"
+                    data-url="">
+                <i class='bx bx-trash'></i>
+            </button>
+        </td>
+    </tr>
+{% empty %}
+    <tr>
+        <td colspan="5" class="text-center">No Medications</td>
+    </tr>
+{% endfor %}

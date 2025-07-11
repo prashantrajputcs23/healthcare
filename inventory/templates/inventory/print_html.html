@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>{{ object.patient.name }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+
+        .print-btn {
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .bill-container {
+            width: 100%;
+            max-width: 190mm;
+            margin: 0 auto;
+            border: 1px solid #000;
+            padding: 10px;
+            box-sizing: border-box;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .header div {
+            flex: 1;
+            min-width: 250px;
+        }
+
+        h2, p {
+            margin: 4px 0;
+        }
+
+        hr {
+            margin: 5px 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            font-size: 12px;
+        }
+
+        th, td {
+            border: 1px solid black;
+            padding: 6px;
+            text-align: center;
+        }
+
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .total-section {
+            text-align: right;
+            margin-top: 15px;
+        }
+
+        /* Doctor cards: responsive fixed thirds, normal wrap */
+        .doctors-card {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .doctor-card {
+            flex: 1 1 calc(33.33% - 10px);
+            border: 1px solid #ccc;
+            padding: 8px;
+            text-align: center;
+            border-radius: 6px;
+            box-sizing: border-box;
+            white-space: normal; /* allow wrapping inside */
+        }
+
+        .doctor-card h4 {
+            margin: 6px 0;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .doctor-card p {
+            font-size: 12px;
+            margin: 2px 0;
+        }
+
+        /* Bimari grid */
+        .bimari-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            margin-top: 10px;
+            text-align: left;
+        }
+
+        .bimari-section ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .bimari-section li {
+            font-size: 14px;
+            margin: 4px 0;
+        }
+
+        .footer {
+            margin-top: 30px;
+            padding-top: 10px;
+            border-top: 1px dashed #000;
+            font-size: 12px;
+            line-height: 1.5;
+            text-align: center;
+        }
+
+        @media print {
+            @page {
+                size: A4;
+                margin: 10mm;
+            }
+
+            body {
+                margin: 0;
+                padding: 0;
+            }
+
+            .print-btn {
+                display: none;
+            }
+
+            .bill-container {
+                width: 190mm;
+                max-width: 190mm;
+                margin: 0 auto;
+                padding: 10mm;
+                border: 1px solid #000;
+                box-sizing: border-box;
+            }
+
+            .header div, .total-section, th, td, .footer {
+                color: #000;
+            }
+
+            th, td {
+                border: 1px solid #000;
+            }
+
+            .footer {
+                position: fixed;
+                bottom: 0;
+                left: 50%;
+                transform: translateX(-50%);
+                width: 190mm;
+                max-width: 190mm;
+                padding: 5mm 0;
+                background: #fff;
+            }
+
+            /* Print: doctor cards as thirds */
+            .doctors-card {
+                justify-content: space-between;
+            }
+
+            .doctor-card {
+                flex: 1 1 calc(33.33% - 10px);
+                padding: 6px;
+            }
+
+            .doctor-card h4 {
+                font-size: 13px;
+            }
+
+            .doctor-card p {
+                font-size: 11px;
+            }
+        }
+    </style>
+</head>
+<body>
+<div class="print-btn">
+    <button onclick="window.print()">Print Bill</button>
+</div>
+<div class="bill-container">
+    <div class="header">
+        <div>
+            <h2>{{ org.name }}</h2>
+            <p><strong>Address:</strong> {{ branches.first.address }}</p>
+            <p><strong>Phone:</strong> {{ branches.first.phone }}</p>
+        </div>
+        <div style="text-align: right;">
+            <p><strong>Bill No:</strong> {{ object.invoice.invoice_number }}</p>
+            <p><strong>Patient Name:</strong> {{ object.patient|title }}</p>
+            <p><strong>Date:</strong> {{ object.created_at|date:"d-m-Y" }}</p>
+
+        </div>
+    </div>
+    <hr>
+    <table>
+        <thead>
+        <tr>
+            <th>S.N</th>
+            <th>Medicine Name</th>
+            <th>Quantity</th>
+            <th>Price/Unit (₹)</th>
+            <th>Gross Amt (₹)</th>
+            <th>Discount (₹)</th>
+            <th>Final Price (₹)</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for sales_item in object.sales_order_details.all %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ sales_item.product.product|title }}</td>
+                <td>{{ sales_item.quantity }}</td>
+                <td>{{ sales_item.price_per_unit }}</td>
+                <td>{{ sales_item.gross_amount }}</td>
+                <td>{{ sales_item.discount }}</td>
+                <td>{{ sales_item.total }}</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <div class="total-section">
+        <h3>Total Amount: ₹{{ object.total_amount }} {% if not object.is_paid %}Due.{% endif %}</h3>
+    </div>
+    <div class="footer">
+        <div class="doctors-card">
+            <div class="doctor-card">
+                <h4>डॉ. के. अहमद</h4>
+                <p>D.P.T, B.P.T., M.I.A.P.</p>
+                <p>Sr.Consultant Physiotherapist</p>
+                <p>S.N. Ortho-Neuro Care Physiotherapy Clinic Kasganj</p>
+                <p>प्रत्येक दिन</p>
+                <p>10:00 AM to 7:00 PM</p>
+            </div>
+            <div class="doctor-card">
+                <h4>डॉ. अंचित उप्पल</h4>
+                <p>MBBS, DNB(ortho), MS(Ortho), M.Ch.(Ortho)</p>
+                <p>Fellowship-Joint Replacement</p>
+                <p>Robotic Joint Replacement Surgeon</p>
+                <p>Sarvodaya Hospital Gr.Noida</p>
+                <p> प्रत्येक माह के दूसरे और चौथे शुक्रवार को</p>
+                <p> 02:00 PM to 5:00 PM</p>
+            </div>
+            <div class="doctor-card">
+                <h4>डॉ. उद्धभव काठपालिया</h4>
+                <p>MBBS, MS, DrNB(Oncology)</p>
+                <p>Sr.Consultant-Surgical Oncology</p>
+                <p>Sarvodaya Hospital Gr.Noida</p>
+                <p>प्रत्येक माह के चौथे बुधवार को </p>
+                <p>02:00 PM to05:00 PM</p>
+            </div>
+        </div>
+        <h4>उपलब्ध इलाज</h4>
+        <div class="bimari-section">
+            <ul>
+                <li>🦵 घुटनों का दर्द</li>
+                <li>💥 कमर का दर्द</li>
+                <li>💪 पीठ का दर्द</li>
+                <li>🦴 गर्दन का दर्द</li>
+            </ul>
+            <ul>
+                <li>💉 लकवा (पैरालिसिस)</li>
+                <li>🔥 साइटिका</li>
+                <li>⚡ मांसपेशियों में खिंचाव</li>
+                <li>🥁 पोस्ट फ्रैक्चर थैरेपी</li>
+            </ul>
+            <ul>
+                <li>🦵 जोड़ प्रत्यारोपण के बाद की थैरेपी</li>
+                <li>⚽ स्पोर्ट्स इंजरी</li>
+                <li>🩸 आर्थराइटिस</li>
+                <li>🧠 न्यूरोलॉजिकल समस्या</li>
+            </ul>
+        </div>
+    </div>
+</div>
+</body>
+</html>

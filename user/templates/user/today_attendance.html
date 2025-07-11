@@ -1,0 +1,57 @@
+{% extends 'user/base.html' %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block title %}User List{% endblock %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span class="text-muted fw-light">User/</span> List</h4>
+        <div class="row">
+            <div class="col-xxl">
+                <div class="card mb-4">
+                    <div class="card-body">
+
+
+                    </div>
+                </div>
+                <div class="card mb-4">
+                    <div class="card-header d-flex align-items-center justify-content-between">
+                        <h5 class="mb-0">User Attendance</h5>
+                        <small class="text-muted float-end">
+                        </small>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col table-responsive" id="table">
+                                {% include 'user/partials/_today_attendance.html' %}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Details Modal #}
+    <div class="modal fade" id="form_model" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalCenterTitle">User Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body" id="form_body">
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-label-secondary close" data-bs-dismiss="modal">
+                        Close
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
+
+{% block footer %}
+{% endblock %}

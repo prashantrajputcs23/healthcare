@@ -1,0 +1,91 @@
+{% extends 'user/base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+{% load static %}
+{% block header %}
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+{% endblock %}
+{% block content %}
+    <div class="container-xxl flex-grow-1 container-p-y">
+        <h4 class="fw-bold py-3 mb-4"><span
+                class="text-muted fw-light">Appointment/</span> Availability/Change</h4>
+        <!-- Basic Layout & Basic with Icons -->
+        <div class="row">
+            <!-- Basic Layout -->
+            <div class="col-xxl">
+                <div class="card">
+                    <div class="card-body">
+                        <form method="post" action="{% url 'doctor:create_update_availability' %}">
+                            {% csrf_token %}
+                            <input type="hidden" name="doctor_id" value="{{ doctor.pk }}" id="doctor_id">
+                            <div class="form-group">
+                                <label for="id_month_year">Month</label>
+                                <input type="text" class="form-control" id="id_month_year" name="month_year"
+                                       data-url="{% url 'doctor:doctor_availability_for_month' %}"/>
+                            </div>
+                            <!-- Apply to All Days Time Inputs -->
+                            <div class="form-group row">
+
+                <div class="col">
+                    <label for="Branch">Branch</label>
+                    <select class="choices form-select choices__input" data-choice="active" id="branch" name="branch" aria-label="Branch">
+                        {% for branch in doctor.branches.all %}
+                            <option value="{{ branch.pk }}">{{ branch.address }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col">
+                    <label for="apply_start_time">Start Time</label>
+                    <input type="time" class="form-control" id="apply_start_time" name="apply_start_time"
+                           value="10:00"/>
+                </div>
+                <div class="col">
+                    <label for="apply_end_time">End Time</label>
+                    <input type="time" class="form-control" id="apply_end_time" name="apply_end_time" value="17:00"/>
+                </div>
+                <div class="col">
+                    <label for="apply_lunch_start_time">Lunch Start Time</label>
+                    <input type="time" class="form-control" id="apply_lunch_start_time" name="apply_lunch_start_time"
+                           value="14:00"/>
+                </div>
+                <div class="col">
+                    <label for="apply_lunch_end_time">Lunch End Time</label>
+                    <input type="time" class="form-control" id="apply_lunch_end_time" name="apply_lunch_end_time"
+                           value="15:00"/>
+                </div>
+                <div class="col">
+                    <label class="mt-3"><input type="checkbox" id="apply_to_all" name="apply_to_all"/> Apply to All
+                        Days</label>
+                </div>
+            </div>
+                            <div class="mb-4">
+                <h4>Daily Availability</h4>
+                <table class="table table-bordered" id="availability-table">
+                    <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Available</th>
+                        <th>Start Time</th>
+                        <th>End Time</th>
+                        <th>Lunch Start Time</th>
+                        <th>Lunch End Time</th>
+                        <th>Error</th> <!-- Column for displaying errors -->
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <!-- Data will be populated dynamically via JS -->
+                    </tbody>
+                </table>
+            </div>
+                            <button type="submit" class="btn btn-primary">Save Availability</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+{% block footer %}
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script src="{% static 'doctor/js/availability.js' %}"></script>
+{% endblock %}
